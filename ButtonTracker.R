@@ -1,4 +1,7 @@
-#Load required packages
+# Authors: 
+# Megan Barnes  
+
+# Load required packages
 
 library(googlesheets4)
 library(tidyverse)
@@ -56,21 +59,21 @@ buttonSummary_period <- buttonTracking %>%
 
 # plot data
 
-buttonPlot_date <- ggplot(buttonSummary_date, aes(x = ActivationDate, # change to date/time omce i combine them somehow... ?
-                                     fill = Button)) +
-  #geom_bar(aes(fill = Button), position = position_stack(reverse = TRUE)) +
-  geom_bar(stat = "bin") +
+
+#Total 
+buttonPlot_total <- ggplot(buttonSummary_total, aes(x =Button, y =  count_by_button, # change to date/time omce i combine them somehow... ?
+                                                    fill = Button)) +
+  geom_col() +
   #theme(legend.position = "top") +
   #theme_minimal()+
-  labs(title = "Button activations by date",
-       x = "Date",
-       y = "Activation Frequency") + 
-  geom_col(width = 1)
-
-buttonPlot_date
+  labs(title = "Button activations by Reporting Period",
+       x = "ReportingPeriod",
+       y = "Activation Frequency") +
+  scale_x_discrete()  
+#geom_col(width = 0.5)
 
 # By Reporting Period
-buttonPlot_period <- ggplot(buttonSummary_period, aes(x = ReportingPeriod, y = count_by_period, # change to date/time omce i combine them somehow... ?
+buttonPlot_period_stackedbar <- ggplot(buttonSummary_period, aes(x = ReportingPeriod, y = count_by_period, # change to date/time omce i combine them somehow... ?
                                                   fill = Button)) +
   #geom_bar(position="stack", stat="identity") +
   geom_col() +
@@ -82,23 +85,59 @@ buttonPlot_period <- ggplot(buttonSummary_period, aes(x = ReportingPeriod, y = c
   scale_x_discrete()  
   #geom_col(width = 0.5)
 
-#Total 
-buttonSummary_total
-ggplot(buttonSummary_period, aes(x = ReportingPeriod, y = count_by_period, # change to date/time omce i combine them somehow... ?
-                                 fill = Button)) +
-  #geom_bar(position="stack", stat="identity") +
-  geom_col() +
-  #theme(legend.position = "top") +
-  #theme_minimal()+
+
+buttonPlot_period_groupedbar <-  ggplot(buttonSummary_period) +
+  geom_bar(aes(x = ReportingPeriod, y = count_by_period, fill = Button),
+           stat = "identity", position = position_dodge2(width = 0.9, preserve = "single")) +  # there are other options for that .https://stackoverflow.com/questions/38101512/the-same-width-of-the-bars-in-geom-barposition-dodge
+
   labs(title = "Button activations by Reporting Period",
-       x = "ReportingPeriod",
        y = "Activation Frequency") +
-  scale_x_discrete()  
-#geom_col(width = 0.5)
+  scale_x_discrete("ReportingPeriod", labels=c("1","2"))
+  
+buttonPlot_period_facet <-  ggplot(buttonSummary_period) +
+  geom_bar(aes(x = ReportingPeriod, y = count_by_period, fill = Button),
+           stat = "identity", position = position_dodge2(width = 0.9, preserve = "single")) +  
+  facet_grid(.~ReportingPeriod, switch="both") +
+  ylim(0,max(buttonSummary_period$count_by_period+5)) + #if i can round to a multiple of 5 and add 1, that would be better 
+  labs(title = "Button activations by Reporting Period",
+       y = "Activation Frequency") +
+  scale_x_discrete("ReportingPeriod", labels=c("1","2"))
+
+
+### BY Date - not quite there yet
+buttonPlot_date <- ggplot(buttonSummary_date, aes(x = ActivationDate, y= count_by_date,   # change to date/time omce i combine them somehow... ?
+                                                  fill = Button)) +
+  geom_col(stat = "identity") +
+  scale_x_continuous() +
+  labs(title = "Button activations by date",
+       x = "Date",
+       y = "Activation Frequency") + 
+  geom_col(width = 1)
+
+buttonPlot_date
+
+# Basic line plot
+ggplot(data = economics, aes(x = date, y = pop))+
+  geom_line(color = "#00AFBB", size = 2)
+# Plot a subset of the data
+ss <- subset(economics, date > as.Date("2006-1-1"))
+ggplot(data = ss, aes(x = date, y = pop)) + 
+  geom_line(color = "#FC4E07", size = 2)
 
 
 # Print all the plots 
-buttonPlot_period
-buttonPlot_date
 buttonPlot_total
 
+buttonPlot_period_stackedbar
+buttonPlot_period_groupedbar
+buttonPlot_period_facet
+
+buttonPlot_date
+
+# Line  Charts for daily activations? 
+# Waffle Charts
+# CDF for total presses through time by button? - cum hist 
+# RShiny for display (new script)
+
+# Some ideas... 
+  # http://www.rebeccabarter.com/blog/2018-05-29_getting_fancy_ggplot2/
