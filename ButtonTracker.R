@@ -6,7 +6,7 @@
 library(googlesheets4)
 library(tidyverse)
 library(shiny)
-source("./CountNAsBill.R")
+library(waffle)
 
 buttonTracking <- read_sheet("https://docs.google.com/spreadsheets/d/1XJpADBMuZrepK0e7dP7yd9oIIi1KLmdvMec9Xfo-ouQ/edit#gid=2013400418")
 buttonTracking <- buttonTracking[,c(1:5,8)]
