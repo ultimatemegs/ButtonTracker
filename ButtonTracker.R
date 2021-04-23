@@ -10,15 +10,15 @@ library(googlesheets4)
 library(tidyverse)
 library(shiny)
 library(waffle)
+library(lubridate)
+library(viridis)
+library(wesanderson)
 
-buttonTracking <- read_sheet("https://docs.google.com/spreadsheets/d/1XJpADBMuZrepK0e7dP7yd9oIIi1KLmdvMec9Xfo-ouQ/edit#gid=2013400418")
+buttonTracking <- read_sheet("https://docs.google.com/spreadsheets/d/1XJpADBMuZrepK0e7dP7yd9oIIi1KLmdvMec9Xfo-ouQ/edit?usp=sharing")
 buttonTracking <- buttonTracking[,c(1:5,8)]
 buttonTracking <- buttonTracking[which(!is.na(buttonTracking$Timestamp)),]
 names(buttonTracking) <- c("Timestamp", "ActivationDate", "ActivationTime", 
                            "Button", "Use","ReportingPeriod")
-
-# for practice, rm last activiation 22nd
-buttonTracking <- buttonTracking[1:50,]
 
 # Specific manual tidying - do after date conversion of col 3
 buttonTracking[1,3] <- buttonTracking[1,1]
@@ -145,27 +145,30 @@ names(waffledata) <- as.character(buttonSummary_total$Button)
 norm <- waffledata/length(waffledata)
 norm <- waffledata
 
-buttonSummary_total_waffle <- waffle(norm, rows=2, size=0.1, 
-       colors=c("#c7d4b6", "#a3aabd", "#a0d0de", "#97b5cf", "#00AFBB", "#E7B800", "#FC4E07"), 
-       title="Button Presses as a proportion of total presses", 
-       xlab="One square == 1 button press")
+buttonSummary_total_waffle <- waffle(norm, rows=6, size=0.1, 
+                                     colors = xxxxx,
+                                     #col = viridis(length(waffledata), discrete_scale()),
+       #colors=c("#c7d4b6", "#a3aabd", "#a0d0de", "#97b5cf", "#00AFBB", "#E7B800", "#FC4E07"), 
+       title="Button Presses",
+       xlab="One square = 14 button presses")
+buttonSummary_total_waffle
 
 # Print all the plots - if you make a new one, please put it here
 pdf("allPlots.pdf")
 #buttonPlot_total
 
-jpeg("waffle.jpg")
+#jpeg("waffle.jpg")
 buttonSummary_total_waffle
 
-# buttonPlot_period_stackedbar
-# buttonPlot_period_groupedbar
-# buttonPlot_period_facet
-# 
-# buttonPlot_date_line
-# ss
-# buttonPlot_date_area
-# 
-# buttonSummary_total_waffle
+buttonPlot_period_stackedbar
+buttonPlot_period_groupedbar
+buttonPlot_period_facet
+
+buttonPlot_date_line
+ss
+buttonPlot_date_area
+
+buttonSummary_total_waffle
 
 dev.off()
 
@@ -182,9 +185,13 @@ dev.off()
     # Number per day, and plot as time/series
     # Daily average, and plot moving window?
     # Total number of words used
-  
-
-
+    # summarise by morning.evening chunks :)
+xx <- wes_palette("Zissou1", 5, type = c("discrete"))
+xxx <- wes_palette("Darjeeling1", 5, type = c("discrete"))
+xxxx <- wes_palette("Cavalcanti1", 5, type = c("discrete"))
+xxxxx <- palette(c(xx, xxx, xxxx))
 # Some more ideas... e.g. the ball one looks interesting , 
   # http://www.rebeccabarter.com/blog/2018-05-29_getting_fancy_ggplot2/
+
+# https://r-graphics.org/recipe-colors-palette-discrete-colorblind
 
