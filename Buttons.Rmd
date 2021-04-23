@@ -1,26 +1,43 @@
-# Authors: 
-# Megan Barnes  #add your name if you write some code
+---
+title: "Buttons"
+author: "Megan Barnes"
+date: "23/04/2021"
+output:
+  pdf_document: default
+  html_document: default
+---
 
-# If you can't see the data, i might have to approve something on Google Drive please request it so i can - It is a live dataset
-# If you use the data, please tag @lilulovedog instagram, or LMK on twitter @ultimatemegs 
-
-# Load required packages
-
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
 library(googlesheets4)
 library(tidyverse)
 library(shiny)
 library(waffle)
+```
 
+## The Button Tracker
+
+Lilu is learning to talk!  
+We are tracking her words. 
+She is part of an internation cognition study!
+You can find out more here: https://fluent.pet/
+
+![Lovely Lilu napping]("./images/Lilu.jpg"⁩)
+
+ '@lilulovedog'
+ '#lilulearns'
+ '#liluandmegs'
+
+
+```{r get data, echo=FALSE}
 buttonTracking <- read_sheet("https://docs.google.com/spreadsheets/d/1XJpADBMuZrepK0e7dP7yd9oIIi1KLmdvMec9Xfo-ouQ/edit#gid=2013400418")
+
 buttonTracking <- buttonTracking[,c(1:5,8)]
 buttonTracking <- buttonTracking[which(!is.na(buttonTracking$Timestamp)),]
 names(buttonTracking) <- c("Timestamp", "ActivationDate", "ActivationTime", 
                            "Button", "Use","ReportingPeriod")
 
-# for practice, rm last activiation 22nd
-buttonTracking <- buttonTracking[1:50,]
-
-# Specific manual tidying - do after date conversion of col 3
+# Specific manual tidying for one val missing actual time - use timestamp instead
 buttonTracking[1,3] <- buttonTracking[1,1]
 
 # Fixing various date related elements
@@ -41,7 +58,11 @@ p <- buttonTracking$DateTimeCombo
 p2 <- as.POSIXct(format(p),tz="UTC")
 attr(p2,"tzone") <- "Australia/Perth"
 
-###### Summarise data ######
+```
+  
+  
+```{r summarise, echo=FALSE}
+  ###### Summarise data ######
 
 # by button overall
 buttonSummary_total <- buttonTracking %>%
@@ -60,9 +81,12 @@ buttonSummary_period <- buttonTracking %>%
   group_by(Button, ReportingPeriod) %>% 
   summarise(count_by_period = n())
 
+```
+
+  
+```{r generate PLOTS, echo=FALSE}
 
 ###### A BUNCH OF PLOTS ########
-
 
 #Total 
 buttonPlot_total <- ggplot(buttonSummary_total, aes(x =Button, y =  count_by_button, # change to date/time omce i combine them somehow... ?
@@ -150,8 +174,25 @@ buttonSummary_total_waffle <- waffle(norm, rows=2, size=0.1,
        title="Button Presses as a proportion of total presses", 
        xlab="One square == 1 button press")
 
+
+# Make a markdown and add observations
+# Line  Charts for daily activations? 
+# Waffle Charts for each button as proportion of total using waffle package 
+# CDF for total presses through time by button? - cum hist 
+# Functionify the plots 
+# more beautiful colours
+# RShiny for display (new script required): https://shiny.rstudio.com/articles/plot-interaction.html
+
+# Some more ideas... e.g. the ball one looks interesting , 
+  # http://www.rebeccabarter.com/blog/2018-05-29_getting_fancy_ggplot2/
+
+
+```
+
+
+```{r print PLOTS}
 # Print all the plots - if you make a new one, please put it here
-pdf("allPlots.pdf")
+# Later add each to its own chunk so i can write words  
 buttonPlot_total
 buttonSummary_total_waffle
 
@@ -164,17 +205,6 @@ ss
 buttonPlot_date_area
 
 buttonSummary_total_waffle
+```
 
-dev.off()
-
-# Make a markdown and add observations
-# Line  Charts for daily activations? 
-# Waffle Charts for each button as proportion of total using waffle package 
-# CDF for total presses through time by button? - cum hist 
-# Functionify the plots 
-# more beautiful colours
-# RShiny for display (new script required): https://shiny.rstudio.com/articles/plot-interaction.html
-
-# Some more ideas... e.g. the ball one looks interesting , 
-  # http://www.rebeccabarter.com/blog/2018-05-29_getting_fancy_ggplot2/
 
