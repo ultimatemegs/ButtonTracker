@@ -1,5 +1,8 @@
 # Authors: 
-# Megan Barnes  
+# Megan Barnes  #add your name if you write some code
+
+# If you can't see the data, i might have to approve something on Google Drive please request it so i can - It is a live dataset
+# If you use the data, please tag @lilulovedog instagram, or LMK on twitter @ultimatemegs 
 
 # Load required packages
 
@@ -38,7 +41,7 @@ p <- buttonTracking$DateTimeCombo
 p2 <- as.POSIXct(format(p),tz="UTC")
 attr(p2,"tzone") <- "Australia/Perth"
 
-##### Summarise data #####
+###### Summarise data ######
 
 # by button overall
 buttonSummary_total <- buttonTracking %>%
@@ -57,7 +60,8 @@ buttonSummary_period <- buttonTracking %>%
   group_by(Button, ReportingPeriod) %>% 
   summarise(count_by_period = n())
 
-# plot data
+
+###### A BUNCH OF PLOTS ########
 
 
 #Total 
@@ -84,7 +88,6 @@ buttonPlot_period_stackedbar <- ggplot(buttonSummary_period, aes(x = ReportingPe
        y = "Activation Frequency") +
   scale_x_discrete()  
   #geom_col(width = 0.5)
-
 
 buttonPlot_period_groupedbar <-  ggplot(buttonSummary_period) +
   geom_bar(aes(x = ReportingPeriod, y = count_by_period, fill = Button),
@@ -117,27 +120,61 @@ buttonPlot_date <- ggplot(buttonSummary_date, aes(x = ActivationDate, y= count_b
 buttonPlot_date
 
 # Basic line plot
-ggplot(data = economics, aes(x = date, y = pop))+
-  geom_line(color = "#00AFBB", size = 2)
-# Plot a subset of the data
-ss <- subset(economics, date > as.Date("2006-1-1"))
-ggplot(data = ss, aes(x = date, y = pop)) + 
+buttonPlot_date_line <- ggplot(buttonSummary_date, aes(x = ActivationDate, y= count_by_date)) + 
+                                geom_line(aes(color = Button), size = 1)
+
+# 3 nice colours - need 7, or a goood package for divergent palettes
+# + scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07"))
+
+# Plot a subset of the data - just one button
+ss <- subset(buttonSummary_date, Button = LoveYou)
+ggplot(data = ss, aes(x = ActivationDate, y= count_by_date)) + 
   geom_line(color = "#FC4E07", size = 2)
 
+buttonPlot_date_area <- ggplot(buttonSummary_date, aes(x = ActivationDate, y= count_by_date)) +
+  geom_area(aes(color = Button, fill = Button), 
+            alpha = 0.2, position = position_dodge(0.8)) #+
+  # scale_color_manual(values = c("#00AFBB", "#E7B800")) +
+  # scale_fill_manual(values = c("#00AFBB", "#E7B800"))
 
-# Print all the plots 
+
+# WAFFLE
+waffledata <- as.vector(buttonSummary_total$count_by_button)
+names(waffledata) <- as.character(buttonSummary_total$Button)
+
+norm <- waffledata/length(waffledata)
+norm <- waffledata
+
+buttonSummary_total_waffle <- waffle(norm, rows=2, size=0.1, 
+       colors=c("#c7d4b6", "#a3aabd", "#a0d0de", "#97b5cf", "#00AFBB", "#E7B800", "#FC4E07"), 
+       title="Button Presses as a proportion of total presses", 
+       xlab="One square == 1 button press")
+
+# Print all the plots - if you make a new one, please put it here
+pdf()
 buttonPlot_total
+buttonSummary_total_waffle
 
 buttonPlot_period_stackedbar
 buttonPlot_period_groupedbar
 buttonPlot_period_facet
 
-buttonPlot_date
+buttonPlot_date_line
+ss
+buttonPlot_date_area
 
+buttonSummary_total_waffle
+
+dev.off()
+
+# Make a markdown and add observations
 # Line  Charts for daily activations? 
-# Waffle Charts
+# Waffle Charts for each button as proportion of total using waffle package 
 # CDF for total presses through time by button? - cum hist 
-# RShiny for display (new script)
+# Functionify the plots 
+# more beautiful colours
+# RShiny for display (new script required): https://shiny.rstudio.com/articles/plot-interaction.html
 
-# Some ideas... 
+# Some more ideas... e.g. the ball one looks interesting , 
   # http://www.rebeccabarter.com/blog/2018-05-29_getting_fancy_ggplot2/
+
