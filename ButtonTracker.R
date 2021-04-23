@@ -152,18 +152,20 @@ buttonSummary_total_waffle <- waffle(norm, rows=2, size=0.1,
 
 # Print all the plots - if you make a new one, please put it here
 pdf("allPlots.pdf")
-buttonPlot_total
+#buttonPlot_total
+
+jpeg("waffle.jpg")
 buttonSummary_total_waffle
 
-buttonPlot_period_stackedbar
-buttonPlot_period_groupedbar
-buttonPlot_period_facet
-
-buttonPlot_date_line
-ss
-buttonPlot_date_area
-
-buttonSummary_total_waffle
+# buttonPlot_period_stackedbar
+# buttonPlot_period_groupedbar
+# buttonPlot_period_facet
+# 
+# buttonPlot_date_line
+# ss
+# buttonPlot_date_area
+# 
+# buttonSummary_total_waffle
 
 dev.off()
 
@@ -174,6 +176,14 @@ dev.off()
 # Functionify the plots 
 # more beautiful colours
 # RShiny for display (new script required): https://shiny.rstudio.com/articles/plot-interaction.html
+
+# add: 
+    # Number of words per day summary sheet & visualise
+    # Number per day, and plot as time/series
+    # Daily average, and plot moving window?
+    # Total number of words used
+  
+
 
 # Some more ideas... e.g. the ball one looks interesting , 
   # http://www.rebeccabarter.com/blog/2018-05-29_getting_fancy_ggplot2/
