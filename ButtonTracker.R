@@ -147,6 +147,7 @@ norm <- waffledata
 
 buttonSummary_total_waffle <- waffle(norm, rows=6, size=0.1, 
                                      colors = xxxxx,
+                                     legend_pos = "bottom",
                                      #col = viridis(length(waffledata), discrete_scale()),
        #colors=c("#c7d4b6", "#a3aabd", "#a0d0de", "#97b5cf", "#00AFBB", "#E7B800", "#FC4E07"), 
        title="Button Presses",
